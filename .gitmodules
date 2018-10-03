@@ -1,0 +1,3 @@
+[submodule "HttpApiClient"]
+	path = HttpApiClient
+	url = https://github.com/chrisckc/HttpApiClient.git
