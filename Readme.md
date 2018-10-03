@@ -1,6 +1,7 @@
 # HttpApiClientDemo
 
 .Net Core solution created to Demonstrate the use of my HttpApiClient Library.
+https://github.com/chrisckc/HttpApiClient.git
 
 The projects were created using SDK v2.1.402
 
