@@ -19,15 +19,17 @@ namespace DemoClient.ApiClients
             bool success = false;
             if (apiResponse != null) {
                 _logger.LogDebug($"{this.GetType().ToString()} : Parsing Response Object for Known Errors");
+
+                string test = apiResponse.Data?.Value<string>("test");
                 // Try to get an error title
-                string errorTitle = apiResponse.Data?.SelectToken("title");
-                if (errorTitle == null) errorTitle = apiResponse.Data?.SelectToken("error")?.SelectToken("title")?.Value;
+                string errorTitle = apiResponse.Data?.Value<string>("title");
+                if (errorTitle == null) errorTitle = apiResponse.Data?.SelectToken("error")?.Value<string>("title");
                 if (!string.IsNullOrEmpty(errorTitle)) {
                     apiResponse.ErrorTitle = errorTitle;
                 }
                 // Try to get an error message
-                string errorDetail = apiResponse.Data?.SelectToken("message");
-                if (errorDetail == null) errorDetail = apiResponse.Data?.SelectToken("error")?.SelectToken("message")?.Value;
+                string errorDetail = apiResponse.Data?.Value<string>("message");
+                if (errorDetail == null) errorDetail = apiResponse.Data?.SelectToken("error")?.Value<string>("message");
                 if (!string.IsNullOrEmpty(errorDetail)) {
                     apiResponse.ErrorDetail = errorDetail;
                 }

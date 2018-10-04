@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using HttpApiClient;
 using HttpApiClient.Models;
+using DemoClient.Extensions;
 
 namespace DemoClient.ApiClients
 {
@@ -29,15 +30,23 @@ namespace DemoClient.ApiClients
 
         
         // Additional methods which wrap methods in the base class etc.
-        public async Task<dynamic> GetData(string resource)
+        public async Task<JToken> GetData(string resource, string dataRoot = null)
         {
             _logger.LogInformation($"{DateTime.Now.ToString()} : Getting data from resource: {resource}");
             ApiResponse apiResponse = await GetResource(resource);
-            bool success = CheckResponse(apiResponse, "demo", "Demo");
+            bool success = CheckResponse(apiResponse, dataRoot, dataRoot.ToUpperFirst());
             if (success) {
-                return apiResponse.Data;
+                return GetJToken(apiResponse.Data, dataRoot);
             }
             return null;
+        }
+
+        private JToken GetJToken(JToken data, string dataRoot) {
+            if (string.IsNullOrEmpty(dataRoot)) {
+                return data;
+            } else {
+                return data?.Value<JToken>(dataRoot);  
+            }
         }
 
         // Do some checking and logging...
@@ -62,12 +71,7 @@ namespace DemoClient.ApiClients
 
             // Log some info about the response
             if (apiResponse.Success) {
-                dynamic data = null;
-                if (string.IsNullOrEmpty(dataRoot)) {
-                    data = apiResponse.Data;
-                } else {
-                    data = apiResponse.Data?.SelectToken(dataRoot);   
-                }
+                dynamic data = GetJToken(apiResponse.Data, dataRoot);
                 if (data != null && data is JArray) {
                     if (logInfo) _logger.LogInformation($"{DateTime.Now.ToString()} : {methodDesc}ed {data.Count} '{dataDescription}\nUrl: {apiResponse.Url}'");
                 } else {

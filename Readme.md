@@ -5,6 +5,8 @@ https://github.com/chrisckc/HttpApiClient.git
 
 The projects were created using SDK v2.1.402
 
+Plenty of comments and commented-out code to demonstrate various usage options
+
 ## Cloning the Demo
 
 This demo includes the HttpApiClient as a Git Submodule
@@ -28,18 +30,11 @@ ASPNETCORE_ENVIRONMENT=Development dotnet run
 
 Followed by the DemoClient
 
-## DemoServer
-
-DemoServer is a .Net Core Web Api project
-
-DemoServer Project was created using:
-```
-dotnet new webapi
-```
-
 ## DemoClient
 
 DemoClient is a .Net Core Console App configured with DI
+
+AutoMapper has been added to demonstrate mapping to POCO's or DTO's
 
 DemoClient Project was created using:
 ```
@@ -51,3 +46,12 @@ dotnet add package Microsoft.Extensions.DependencyInjection
 ```
 
 The relevant code was then added to build the app configuration and the DI container
+
+## DemoServer
+
+DemoServer is a .Net Core Web Api project
+
+DemoServer Project was created using:
+```
+dotnet new webapi
+```

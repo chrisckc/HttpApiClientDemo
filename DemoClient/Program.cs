@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using DemoClient.ApiClients;
 using DemoClient.Services;
+using AutoMapper;
 
 namespace DemoClient
 {
@@ -50,6 +51,7 @@ namespace DemoClient
 
             _logger.LogInformation("Doing Work...");
             CancellationTokenSource cts = new CancellationTokenSource();
+            //CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)); // Testing cancellation
             
             // This code waits for the result and then logs it
             //bool result = demoService.DoWork(cts).GetAwaiter().GetResult();
@@ -147,6 +149,8 @@ namespace DemoClient
                 //options.DefaultTooManyRequestsRetryDuration = 60;
                 options.UseExponentialRetryWaitDuration = false;
             });
+
+            services.AddAutoMapper();
         }
     }
 }
