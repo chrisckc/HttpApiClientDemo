@@ -43,6 +43,8 @@ dotnet add package Microsoft.Extensions.Configuration.EnvironmentVariables
 dotnet add package Microsoft.Extensions.Configuration.Json
 dotnet add package Microsoft.Extensions.Logging.Console
 dotnet add package Microsoft.Extensions.DependencyInjection
+dotnet add package Microsoft.Extensions.Configuration.Commandline
+dotnet add package Microsoft.Extensions.Configuration.UserSecrets
 ```
 
 The relevant code was then added to build the app configuration and the DI container

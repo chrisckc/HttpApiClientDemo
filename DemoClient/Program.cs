@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using DemoClient.ApiClients;
 using DemoClient.Services;
 using AutoMapper;
+using System.Reflection;
 
 namespace DemoClient
 {
@@ -24,7 +25,7 @@ namespace DemoClient
 
             // Build the app configuration
             Console.WriteLine("Building Configuration..");
-            IConfiguration configuration = BuildConfiguration();
+            IConfiguration configuration = BuildConfiguration(args);
 
             // Setup DI
             Console.WriteLine("Configuring Services...");
@@ -68,7 +69,7 @@ namespace DemoClient
             Console.ReadLine();
         }
 
-        private static IConfiguration BuildConfiguration() {
+        private static IConfiguration BuildConfiguration(string[] args) {
             Console.WriteLine("Checking Environment Variables:");
             string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             string verbose = Environment.GetEnvironmentVariable("ASPNETCORE_VERBOSE");
@@ -82,15 +83,26 @@ namespace DemoClient
             }
             if (string.IsNullOrWhiteSpace(verbose)) verbose = "false";
 
-            // Add configuration sources
+            // Add configuration sources, similar to WebHost CreateDefaultBuilder method
             // Configuration Builder looks for appsettings.json in the output dir
             // make sure a CopyToOutputDirectory directive is added to csproj file
-            return new ConfigurationBuilder()
+            var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables()
-                .Build();
+                .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true);
+            if (environment == "Development") {
+                var appAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+                if (appAssembly != null) {
+                    config.AddUserSecrets(appAssembly, optional: true);
+                }
+                // or we could use this method to add the User Secrets to a custom class
+                //config.AddUserSecrets<ClassNameForSecrets>();
+            }
+            config.AddEnvironmentVariables();
+            if (args != null) {
+                config.AddCommandLine(args);
+            }
+            return config.Build();
         }
 
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration) {
